@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48f73bf1b7e742ca927c0f520d35f508, type: 3}
+  m_Name: TerrainColorSettings
+  m_EditorClassIdentifier: 
+  grad:
+    serializedVersion: 2
+    key0: {r: 0.28146136, g: 0.48298272, b: 0.5188679, a: 1}
+    key1: {r: 0.13710396, g: 0.745283, b: 0.6607463, a: 1}
+    key2: {r: 0.6439967, g: 0.69259036, b: 0.44634593, a: 0}
+    key3: {r: 0.13373677, g: 0.4339623, b: 0.17332695, a: 0}
+    key4: {r: 0.7075472, g: 0.54384905, b: 0.3648985, a: 0}
+    key5: {r: 0.6037736, g: 0.3674533, b: 0.14050074, a: 0}
+    key6: {r: 0.509434, g: 0.47127917, b: 0.43494126, a: 0}
+    key7: {r: 1, g: 1, b: 1, a: 0}
+    ctime0: 0
+    ctime1: 12722
+    ctime2: 20432
+    ctime3: 30069
+    ctime4: 41249
+    ctime5: 49537
+    ctime6: 57632
+    ctime7: 65535
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 2
+  textureFilterMode: 1

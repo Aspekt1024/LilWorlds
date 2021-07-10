@@ -1,0 +1,17 @@
+{
+    "name": "Aspekt.Spheres.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:97a16b1dc667e4443ae5b5eca2ebb7ff",
+        "GUID:3bc6441df88414a458517a2a6695f05f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

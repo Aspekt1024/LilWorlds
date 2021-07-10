@@ -1,0 +1,16 @@
+{
+    "name": "Aspekt.Spheres",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3bc6441df88414a458517a2a6695f05f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
