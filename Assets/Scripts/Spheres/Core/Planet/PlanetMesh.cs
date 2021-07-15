@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Aspekt.Spheres
 {
@@ -13,19 +14,36 @@ namespace Aspekt.Spheres
             this.parent = parent;
         }
 
-        public void GenerateMesh(ComputeShader shader)
+        public void GenerateMesh(ComputeShader shader, float radius, GameObject spherePrefab)
         {
             
             var mainKernel = shader.FindKernel("CSMain");
 
             ComputeBuffer vertexBuffer = null;
 
-            ComputeHelper.CreateAndSetBuffer<float>(ref vertexBuffer, vertexBuffer.count, shader, "heights", mainKernel);
+            var size = 10;
+            var length = (size + 1) * (size + 1) * (size + 1);
+            
+            shader.SetFloat("length", size + 1);
+
+            ComputeHelper.CreateAndSetBuffer<Vector4>(ref vertexBuffer, length, shader, "vertices", mainKernel);
             ComputeHelper.Run(shader, vertexBuffer.count, kernelIndex: mainKernel);
                 
-            var heights = new float[vertexBuffer.count];
-            heightBuffer.GetData (heights);
-            ComputeHelper.Release(heightBuffer);
+            var vertexData = new Vector4[vertexBuffer.count];
+            vertexBuffer.GetData (vertexData);
+            ComputeHelper.Release(vertexBuffer);
+
+            var max = vertexData.Max(v => v.z);
+            var min = vertexData.Min(v => v.z);
+            var container = new GameObject("pdsada");
+            container.transform.SetParent(parent);
+            foreach (var vertex in vertexData)
+            {
+                var sph = Object.Instantiate(spherePrefab, container.transform);
+                sph.transform.position = new Vector3(vertex.x, vertex.y, vertex.z);
+                var weight = vertex.w / (max - min);
+                sph.GetComponent<MeshRenderer>().material.SetFloat("weight", weight);
+            }
         }
 
         private Mesh GetMesh()
