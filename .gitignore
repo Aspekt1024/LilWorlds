@@ -3,6 +3,7 @@
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
+/[Ll]ogs/
 /Assets/AssetStoreTools*
 /Assets/ImportedAssets*
 
@@ -20,6 +21,7 @@ ExportedObj/
 *.svd
 *.ide
 *.idea
+*.sln
 /.vs/
 
 
