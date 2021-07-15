@@ -31,6 +31,36 @@ namespace Aspekt.Spheres
         public void GenerateSphere(SphereShapeSettings shapeSettings, SphereShadingSettings shadingSettings)
         {
             GenerateVertsAndTris(shapeSettings.resolution);
+            
+            var hs = shapeSettings.heightShader;
+            var mainKernel = hs.FindKernel("CSMain");
+
+            ComputeBuffer vertexBuffer = null;
+            ComputeBuffer heightBuffer = null;
+            ComputeHelper.CreateStructuredBuffer(ref vertexBuffer, vertices.Items);
+            hs.SetBuffer(mainKernel, "vertices", vertexBuffer);
+            hs.SetInt("numVertices", vertexBuffer.count);
+
+            hs.SetFloat("frequency", shapeSettings.modifiers.frequency);
+            hs.SetFloat("offset", shapeSettings.modifiers.offset);
+            hs.SetFloat("strength", shapeSettings.modifiers.strength);
+
+            ComputeHelper.CreateAndSetBuffer<float>(ref heightBuffer, vertexBuffer.count, hs, "heights", mainKernel);
+            ComputeHelper.Run(hs, vertexBuffer.count, kernelIndex: mainKernel);
+                
+            var heights = new float[vertexBuffer.count];
+            heightBuffer.GetData (heights);
+            ComputeHelper.Release(heightBuffer);
+
+            var minHeight = float.MaxValue;
+            var maxHeight = float.MinValue;
+            for (int i = 0; i < Vertices.Length; i++)
+            {
+                Vertices[i] = Vertices[i].normalized * (shapeSettings.radius + heights[i]);
+                var height = Vertices[i].magnitude;
+                minHeight = Mathf.Min(minHeight, height);
+                maxHeight = Mathf.Max(maxHeight, height);
+            }
 
             var mesh = GetMesh();
             mesh.SetVertices(Vertices);
@@ -39,7 +69,10 @@ namespace Aspekt.Spheres
 
             var meshRenderer = parent.GetComponentInChildren<MeshRenderer>();
             meshRenderer.sharedMaterial = shadingSettings.material;
+            meshRenderer.sharedMaterial.SetFloat("_MinHeight", minHeight);
+            meshRenderer.sharedMaterial.SetFloat("_MaxHeight", maxHeight);
         }
+        
 
         private void GenerateVertsAndTris(int resolution)
         {

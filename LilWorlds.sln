@@ -1,14 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspekt.Spheres", "Aspekt.Spheres.csproj", "{a7d43dce-6768-28f4-094b-7c011b607482}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspekt.Spheres.Editor", "Aspekt.Spheres.Editor.csproj", "{5814e2c0-c499-703e-33f8-d9159d3900de}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aspekt.Noise", "Aspekt.Noise.csproj", "{e1158175-0b07-821f-5425-3108058bc12d}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-
+		{a7d43dce-6768-28f4-094b-7c011b607482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{a7d43dce-6768-28f4-094b-7c011b607482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{a7d43dce-6768-28f4-094b-7c011b607482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{a7d43dce-6768-28f4-094b-7c011b607482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5814e2c0-c499-703e-33f8-d9159d3900de}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5814e2c0-c499-703e-33f8-d9159d3900de}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5814e2c0-c499-703e-33f8-d9159d3900de}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5814e2c0-c499-703e-33f8-d9159d3900de}.Release|Any CPU.Build.0 = Release|Any CPU
+		{e1158175-0b07-821f-5425-3108058bc12d}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{e1158175-0b07-821f-5425-3108058bc12d}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{e1158175-0b07-821f-5425-3108058bc12d}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{e1158175-0b07-821f-5425-3108058bc12d}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

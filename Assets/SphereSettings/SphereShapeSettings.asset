@@ -12,5 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eb13570ffb24f4aa1ff40f54c090a1a, type: 3}
   m_Name: SphereShapeSettings
   m_EditorClassIdentifier: 
-  radius: 1.58
-  resolution: 50
+  radius: 3.9
+  resolution: 100
+  heightShader: {fileID: 7200000, guid: 64729788053c12340b48cf13b45aab9f, type: 3}
+  modifiers:
+    frequency: 25.12
+    offset: 0
+    strength: 11.16

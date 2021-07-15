@@ -10,6 +10,7 @@ namespace Aspekt.Spheres
         
         public T[] Items => list;
         public int NextIndex => nextIndex;
+        public int Length => Items.Length;
         
         public FixedSizeList(int size)
         {
