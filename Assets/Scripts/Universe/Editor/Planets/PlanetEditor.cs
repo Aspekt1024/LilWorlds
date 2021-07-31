@@ -25,7 +25,8 @@ namespace Aspekt.Universe.Planets
             
             SetupEditors(
                 planet,
-                planet.shapeSettings
+                planet.shapeSettings,
+                planet.densitySettings
             );
         }
     }

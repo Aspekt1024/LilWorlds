@@ -7,12 +7,22 @@ namespace Aspekt.Universe.Planets
     public class Planet : MonoBehaviour, IMultiSettingsParent
     {
         public PlanetShapeSettings shapeSettings;
+        public PlanetDensitySettings densitySettings;
 
         private bool settingsChanged;
 
+        private PlanetGenerator generator;
+        private Transform planetModel;
+
         private void Generate()
         {
+            generator ??= new PlanetGenerator();
             
+            DestroyOriginalParent();
+            
+            planetModel = generator.Generate(shapeSettings, densitySettings);
+            planetModel.SetParent(transform);
+            planetModel.position = transform.position;
         }
 
         public void OnSettingsChanged()
@@ -26,7 +36,6 @@ namespace Aspekt.Universe.Planets
             {
                 if (settingsChanged)
                 {
-                    Debug.Log("change action");
                     settingsChanged = false;
                     Generate();
                 }
@@ -38,6 +47,7 @@ namespace Aspekt.Universe.Planets
             var allSettings = new List<SettingsComponent>
             {
                 shapeSettings,
+                densitySettings,
             };
 
             foreach (var s in allSettings)
@@ -50,6 +60,24 @@ namespace Aspekt.Universe.Planets
             }
             
             OnSettingsChanged();
+        }
+        
+        private void DestroyOriginalParent()
+        {
+            if (planetModel == null)
+            {
+                planetModel = transform.Find("PlanetParent");
+                if (planetModel == null) return;
+            }
+            
+            if (Application.isPlaying)
+            {
+                Destroy(planetModel.gameObject);
+            }
+            else
+            {
+                DestroyImmediate(planetModel.gameObject);
+            }
         }
     }
 }
