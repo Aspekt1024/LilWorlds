@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 596678afdbb2406bb2f6b9d12e91aa8b, type: 3}
+  m_Name: SphereDensity
+  m_EditorClassIdentifier: 
+  densityCompute: {fileID: 7200000, guid: 3153755ba723b7c458c5600430b2a3e9, type: 3}
+  NumVoxels: 104
+  Spacing: 0.159
+  centre: {x: 0, y: 0, z: 0}
+  offset: {x: 0, y: 0, z: 0}
+  numOctaves: 4
+  lacunarity: 2
+  persistence: 0.5
+  frequency: 0.43
+  noiseStrength: 0.08
+  enableTerracing: 1
+  terrace: 0.04
+  octaveRotation: 0
+  octaveRotateMode: 0
+  floorOffset: -1.06
+  floorStrength: 0.619

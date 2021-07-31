@@ -1,0 +1,48 @@
+#pragma kernel CSMain
+
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise2D.hlsl"
+#include "Packages/jp.keijiro.noiseshader/Shader/SimplexNoise3D.hlsl"
+
+StructuredBuffer<float3> grid;
+RWStructuredBuffer<float> density;
+
+float frequency;
+float scale;
+float rot;
+float terrace;
+
+[numthreads(512,1,1)]
+void CSMain (uint id : SV_DispatchThreadID)
+{
+    float d = -grid[id].y;
+
+    float a = rot * 3.1415726 / 180;
+    float sina, cosa;
+    sincos(a, sina, cosa);
+    float2x2 m = float2x2(cosa, -sina, sina, cosa);
+    float3 rotPos = float3(mul(m, grid[id].xz), grid[id].y).xyz;
+
+    d += SimplexNoise(rotPos * frequency * 0.21) * scale * 1.5;
+    d += SimplexNoise(rotPos * frequency * 0.47) * scale * 1.24;
+    d += SimplexNoise(grid[id] * frequency) * scale;
+    d += SimplexNoise(rotPos * frequency * 2.03) * scale * 0.5;
+    d += SimplexNoise(rotPos * frequency * 4.23) * scale * 0.25;
+    d += SimplexNoise(grid[id] * frequency * 7.81) * scale * 0.12;
+    d += SimplexNoise(rotPos * frequency * 9.16) * scale * 0.05;
+    d += SimplexNoise(rotPos * frequency * 12.88) * scale * 0.01;
+
+    // Floor
+    half floorLevel = 0;
+    d += saturate((floorLevel - grid[id].y) * 3)*40;
+
+    // Terraces
+    d += grid[id].y % terrace;
+
+    // Ensure there's no open top
+    d -= saturate((grid[id].y - 0.45) * 40);
+
+    //
+    //d /= grid[id].y;
+    
+    density[id] = d;
+}

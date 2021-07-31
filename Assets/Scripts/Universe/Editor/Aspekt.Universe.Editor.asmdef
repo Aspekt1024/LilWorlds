@@ -1,0 +1,16 @@
+{
+    "name": "Aspekt.Universe.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:08021d6b5417b5042add0129e50e1c0d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

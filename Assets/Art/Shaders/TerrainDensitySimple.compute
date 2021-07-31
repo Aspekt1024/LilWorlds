@@ -1,0 +1,73 @@
+#pragma kernel Density
+
+#include "Noise.compute"
+
+RWStructuredBuffer<float4> points;
+
+float3 worldSize;
+int numPointsPerAxis;
+float spacing;
+
+float3 centre;
+float3 offset;
+
+int octaves;
+float lacunarity;
+float persistence;
+float frequency;
+float noiseWeight;
+bool enableTerracing;
+float terrace;
+float octaveRotation;
+int rotMode;
+
+float floorOffset;
+float floorStrength;
+
+int indexFromCoord(int x, int y, int z) {
+    return z * numPointsPerAxis * numPointsPerAxis + y * numPointsPerAxis + x;
+}
+
+[numthreads(8, 8, 8)]
+void Density (int3 id : SV_DispatchThreadID)
+{
+    if (id.x > numPointsPerAxis - 1 || id.y > numPointsPerAxis - 1 || id.z > numPointsPerAxis - 1)
+    {
+        return;
+    }
+    
+    float3 pos = centre + (id - worldSize.xyz / 2) * spacing;
+
+    float d = -pos.y;
+    
+    float a = octaveRotation * 3.1415726 / 180;
+    float sina, cosa;
+    sincos(a, sina, cosa);
+    float2x2 m = float2x2(cosa, -sina, sina, cosa);
+    float3 rotPos = float3(mul(m, pos.xz), pos.y).xyz;
+
+    // TODO rotMode and octave loop with lacunarity and persistence
+    d += snoise(pos * frequency * 0.21) * noiseWeight * 1.5;
+    d += snoise(rotPos * frequency * 0.47) * noiseWeight * 1.24;
+    d += snoise(pos * frequency) * noiseWeight;
+    d += snoise(rotPos * frequency * 2.03) * noiseWeight * 0.5;
+    d += snoise(rotPos * frequency * 4.23) * noiseWeight * 0.25;
+    d += snoise(pos * frequency * 7.81) * noiseWeight * 0.12;
+    d += snoise(rotPos * frequency * 9.16) * noiseWeight * 0.05;
+    d += snoise(rotPos * frequency * 12.88) * noiseWeight * 0.01;
+
+    // Floor
+    d += saturate((floorOffset - pos.y) * 3)* 4 * floorStrength;
+
+    // Terraces
+    if (enableTerracing)
+    {
+        d += pos.y % terrace;
+    }
+
+    // Ensure there's no open top
+    d -= saturate((pos.y - worldSize.y * spacing * 0.49) * 4) * 40;
+    
+    int index = indexFromCoord(id.x,id.y,id.z);
+    points[index] = float4(pos, d);
+}

@@ -1,0 +1,103 @@
+// Reference: https://github.com/SebLague/Marching-Cubes/blob/master/Assets/Scripts/Compute/MarchingCubes.compute
+
+#pragma kernel March
+
+#include "MarchTables.compute"
+
+struct VertexData {
+    int edgeIndex;
+	int marchIndex;
+    float3 pos;
+};
+
+struct Triangle {
+	VertexData vertexA;
+	VertexData vertexB;
+	VertexData vertexC;
+};
+
+AppendStructuredBuffer<Triangle> triangles;
+RWStructuredBuffer<float4> points;
+
+int numPointsPerAxis;
+float isoLevel;
+
+float3 interpolateVerts(float4 v1, float4 v2) {
+	float t = (isoLevel - v1.w) / (v2.w - v1.w);
+	return v1.xyz + t * (v2.xyz - v1.xyz);
+}
+
+int indexFromCoord(int x, int y, int z) {
+	return z * numPointsPerAxis * numPointsPerAxis + y * numPointsPerAxis + x;
+}
+
+VertexData createVertex(int3 id, int edgeIndex, float4 cubeCornerA, float4 cubeCornerB) {
+	VertexData vertex;
+	vertex.marchIndex = indexFromCoord(
+		id.x + vertexIDMap[edgeIndex][0],
+		id.y + vertexIDMap[edgeIndex][1],
+		id.z + vertexIDMap[edgeIndex][2]
+	);
+	vertex.edgeIndex = vertexIDMap[edgeIndex][3];
+
+	vertex.pos = interpolateVerts(cubeCornerA, cubeCornerB);
+	return vertex;
+}
+
+[numthreads(8,8,8)]
+void March (int3 id : SV_DispatchThreadID)
+{
+	// As we're marching along in cubes, the last points on an axis are included in the cube starting
+	// at the second point from the end.
+	if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+		return;
+	}
+	
+	// Determine the corners of the cube
+	float4 cubeCorners[8] = {
+		points[indexFromCoord(id.x, id.y, id.z)],
+		points[indexFromCoord(id.x + 1, id.y, id.z)],
+		points[indexFromCoord(id.x + 1, id.y, id.z + 1)],
+		points[indexFromCoord(id.x, id.y, id.z + 1)],
+		points[indexFromCoord(id.x, id.y + 1, id.z)],
+		points[indexFromCoord(id.x + 1, id.y + 1, id.z)],
+		points[indexFromCoord(id.x + 1, id.y + 1, id.z + 1)],
+		points[indexFromCoord(id.x, id.y + 1, id.z + 1)]
+	};
+
+	// Determine the unique index for each cube configuration (defined in MarchTables.compute)
+	// This value is used to determine which of the edges of the cube cut through the isosurface
+	int cubeIndex = 0;
+	if (cubeCorners[0].w < isoLevel) cubeIndex |= 1;
+	if (cubeCorners[1].w < isoLevel) cubeIndex |= 2;
+	if (cubeCorners[2].w < isoLevel) cubeIndex |= 4;
+	if (cubeCorners[3].w < isoLevel) cubeIndex |= 8;
+	if (cubeCorners[4].w < isoLevel) cubeIndex |= 16;
+	if (cubeCorners[5].w < isoLevel) cubeIndex |= 32;
+	if (cubeCorners[6].w < isoLevel) cubeIndex |= 64;
+	if (cubeCorners[7].w < isoLevel) cubeIndex |= 128;
+
+	// Add the triangles defined by this cube
+	for (int i = 0; triangulation[cubeIndex][i] != -1; i += 3) {
+		Triangle tri;
+
+		int edgeIndex1 = triangulation[cubeIndex][i];
+		int edgeIndex2 = triangulation[cubeIndex][i + 1];
+		int edgeIndex3 = triangulation[cubeIndex][i + 2];
+
+		int a1 = cornerIndexAFromEdge[edgeIndex1];
+		int b1 = cornerIndexBFromEdge[edgeIndex1];
+
+		int a2 = cornerIndexAFromEdge[edgeIndex2];
+		int b2 = cornerIndexBFromEdge[edgeIndex2];
+
+		int a3 = cornerIndexAFromEdge[edgeIndex3];
+		int b3 = cornerIndexBFromEdge[edgeIndex3];
+
+		tri.vertexC = createVertex(id, edgeIndex1, cubeCorners[a1], cubeCorners[b1]);
+		tri.vertexB = createVertex(id, edgeIndex2, cubeCorners[a2], cubeCorners[b2]);
+		tri.vertexA = createVertex(id, edgeIndex3, cubeCorners[a3], cubeCorners[b3]);
+
+		triangles.Append(tri);
+	}
+}

@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17c15347e01a48e3aca87e5ab3f3c2ac, type: 3}
+  m_Name: PlanetShadingSettings
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: e555a69293e965048952b70b43214ac4, type: 2}
