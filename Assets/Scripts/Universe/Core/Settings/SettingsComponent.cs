@@ -7,6 +7,9 @@ namespace Aspekt
     {
         public Action OnSettingsChanged;
         
-        
+        protected virtual void OnValidate()
+        {
+            OnSettingsChanged?.Invoke();
+        }
     }
 }

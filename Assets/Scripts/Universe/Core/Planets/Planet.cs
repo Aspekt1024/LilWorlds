@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Aspekt.Universe.Planets
 {
     [ExecuteInEditMode]
-    public class Planet : MonoBehaviour
+    public class Planet : MonoBehaviour, IMultiSettingsParent
     {
         public PlanetShapeSettings shapeSettings;
 
@@ -25,7 +26,7 @@ namespace Aspekt.Universe.Planets
             {
                 if (settingsChanged)
                 {
-                    Debug.Log("Change action");
+                    Debug.Log("change action");
                     settingsChanged = false;
                     Generate();
                 }
@@ -34,10 +35,18 @@ namespace Aspekt.Universe.Planets
 
         private void OnValidate()
         {
-            if (shapeSettings != null)
+            var allSettings = new List<SettingsComponent>
             {
-                shapeSettings.OnSettingsChanged -= OnSettingsChanged;
-                shapeSettings.OnSettingsChanged += OnSettingsChanged;
+                shapeSettings,
+            };
+
+            foreach (var s in allSettings)
+            {
+                if (s != null)
+                {
+                    s.OnSettingsChanged -= OnSettingsChanged;
+                    s.OnSettingsChanged += OnSettingsChanged;
+                }
             }
             
             OnSettingsChanged();

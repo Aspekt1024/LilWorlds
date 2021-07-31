@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Aspekt
 {
-    public class MultiSettingsEditor : Editor
+    public class MultiSettingsEditor<T> : Editor where T : IMultiSettingsParent
     {
         private struct SettingsEditor
         {
@@ -14,8 +14,20 @@ namespace Aspekt
         }
         private readonly List<SettingsEditor> settingsEditors = new List<SettingsEditor>();
 
-        protected void DrawSettingsEditors()
+        private T parent;
+
+        protected void DrawEditors()
         {
+            using (var check = new EditorGUI.ChangeCheckScope())
+            {
+                DrawDefaultInspector();
+                if (check.changed)
+                {
+                    parent.OnSettingsChanged();
+                    EditorApplication.QueuePlayerLoopUpdate();
+                }
+            }
+            
             for (int i = 0; i < settingsEditors.Count; i++)
             {
                 settingsEditors[i] = DrawSettingsEditor(settingsEditors[i]);
@@ -23,8 +35,10 @@ namespace Aspekt
             }
         }
         
-        protected void SetupSettingsEditors(params SettingsComponent[] settingsComponents)
+        protected void SetupEditors(T parent, params SettingsComponent[] settingsComponents)
         {
+            this.parent = parent;
+            
             settingsEditors.Clear();
             
             foreach (var settingsComponent in settingsComponents)
